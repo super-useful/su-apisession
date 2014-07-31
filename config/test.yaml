@@ -1,0 +1,7 @@
+app:
+  session:
+    host: "localhost"
+    port: 6379
+    cleanup_time: 200
+    cleanup_interval: 100
+  global_session_timeout: 150
