@@ -137,3 +137,26 @@ stop the daemon.
 ```
 
 ### request/response caching
+
+in your API definitions you can simply add `cache : require('su-apisession/cache')` to any endpoints you want to cache
+
+#### example
+
+``` javascript
+
+   ...,
+   paths : {
+       my_endpoint_path_01 : { // this endpoint will use request response caching
+          cache : require('su-apisession/cache'),
+          ...
+       },
+       my_endpoint_path_02 : { // this endpoint will NOT use request response caching
+          ...
+       }
+   }
+
+```
+
+this allows you to have more granular control over which endpoints are cached and which are not.
+
+alternatively, you could roll your own cache get/set module, which should simply return an `Object` with a `get:Function` and a `set:Function` for doing the obvious.
