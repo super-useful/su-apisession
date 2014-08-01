@@ -69,6 +69,8 @@ describe('su-apisession/daemon', function() {
 
     var token = yield session.set(sessionData);
 
+    yield sleep(100);
+
     underTest.listen(function(session, data) {
       expect(session).to.be.a.string;
 
@@ -80,6 +82,8 @@ describe('su-apisession/daemon', function() {
     yield sleep(250);
 
     underTest.stop();
+
+    yield sleep(250);
 
     expect(yield session.get(token)).to.be.null;
 

@@ -66,8 +66,10 @@ module.exports = exports = {
   },
   start: function() {
     if (intervalId !== null) {
-      intervalId = defer.interval(exports.cleanup, cleanupInterval);
+      exports.stop();
     }
+
+    intervalId = defer.interval(exports.cleanup, cleanupInterval);
 
     return exports;
   },
