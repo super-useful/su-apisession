@@ -169,8 +169,12 @@ module.exports = exports = {
   update: function * update (session) {
 
     try {
+      if (session && session.isValid) {
+        session.timestamp = Date.now();
+      }
 
       yield save(session);
+
       return yield retrieve(session.id);
     }
     catch (e) {
