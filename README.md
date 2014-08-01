@@ -82,4 +82,58 @@ invalidates the session bound to `token:String` and returns `true|false` to indi
 
 ### daemon
 
+use this if you want a background task that automatically invalidates and removes sessions from the database if they have timed out.
+
+``` javascript
+
+   var daemon = require( 'su-apisession/daemon' );
+
+```
+
+#### cleanup()
+
+manually force the daemon to run its cleanup task — this is used internally when the daemon is started.
+
+``` javascript
+
+   yield daemon.cleanup();
+
+```
+
+#### listen( callback:Function )
+
+if you want to execute tasks on expired sessions then add a listener callback to the daemon.
+
+handy if you want to clean up other stuff when a session is timed out and removed from the database.
+
+``` javascript
+
+   daemon.listen( function( token, data ) {
+   } );
+
+   daemon.listen( require( 'path/to/background/cleanup/task' ) );
+
+```
+
+#### start()
+
+start the daemon.
+
+``` javascript
+
+   daemon.start();
+
+```
+
+#### start()
+
+stop the daemon.
+
+
+``` javascript
+
+   daemon.stop();
+
+```
+
 ### request/response caching
