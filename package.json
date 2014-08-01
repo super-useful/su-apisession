@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "su-apiserver session handling",
   "dependencies": {
+    "su-define-object": "git+ssh://git@github.com:super-useful/su-define-object.git",
     "co": "x",
     "co-defer": "x",
     "co-redis": "x",
