@@ -152,7 +152,7 @@ module.exports = exports = {
       var session = yield retrieve(token);
 
       session.isValid = false;
-      session.cache = null;
+      session.cache = {};
 
       yield save(session);
 
