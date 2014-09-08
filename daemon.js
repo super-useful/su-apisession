@@ -6,9 +6,14 @@ var defer = require('co-defer');
 var is = require('super-is');
 var iter = require('super-iter');
 var CONF = require('config');
+var getenv = require('getenv');
+var redis = require('redis');
+
+var REDIS_PORT = getenv('REDIS_PORT_6379_TCP_PORT', '6379');
+var REDIS_HOST = getenv('REDIS_PORT_6379_TCP_ADDR', 'localhost')
 
 var session = require('./');
-var store = require('co-redis')(require('redis').createClient(CONF.app.session.port, CONF.app.session.host));
+var store = require('co-redis')(redis.createClient(REDIS_PORT, REDIS_HOST));
 
 var bus = new EventEmitter();
 
