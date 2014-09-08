@@ -160,3 +160,16 @@ in your API definitions you can simply add `cache : require('su-apisession/cache
 this allows you to have more granular control over which endpoints are cached and which are not.
 
 alternatively, you could roll your own cache get/set module, which should simply return an `Object` with a `get:Function` and a `set:Function` for doing the obvious.
+
+## Environment
+
+The following ENV vars must be available.
+
+* `REDIS_PORT_6379_TCP_PORT` - Redis port, defaults to 6379.
+* `REDIS_PORT_6379_TCP_ADDR` - Redis host, defaults to localhost.
+
+## Tests
+
+Requires redis running.
+
+`npm test`
