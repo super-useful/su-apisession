@@ -13,7 +13,7 @@ var REDIS_PORT = getenv('REDIS_PORT_6379_TCP_PORT', '6379');
 var REDIS_HOST = getenv('REDIS_PORT_6379_TCP_ADDR', 'localhost')
 
 var session = require('./');
-var store = require('co-redis')(redis.createClient(REDIS_PORT, REDIS_HOST));
+var redis = require('./redis');
 
 var bus = new EventEmitter();
 
@@ -43,8 +43,8 @@ function* checkAndInvalidate(token) {
 }
 
 function* invalidate(token, data) {
-  yield store.del(token);
-  yield store.lrem('token_list', 0, token);
+  yield redis.del(token);
+  yield redis.lrem('token_list', 0, token);
 
   if (data !== null) {
     data.isValid = false;
@@ -54,7 +54,7 @@ function* invalidate(token, data) {
 
 module.exports = exports = {
   cleanup: function* () {
-    var tokens = yield store.lrange('token_list', 0, -1);
+    var tokens = yield redis.lrange('token_list', 0, -1);
 
     if (Array.isArray(tokens)) {
       yield map(tokens, co(checkAndInvalidate));

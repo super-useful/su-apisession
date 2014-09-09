@@ -7,7 +7,7 @@
 
 var CONF = require('config');
 var rack = require('hat').rack();
-var store = require('co-redis')(require('redis').createClient(CONF.app.session.port, CONF.app.session.host));
+var redis = require('./redis');
 var SessionData = require('./lib/SessionData');
 
 var SESSION_TIMEOUT = CONF.global_session_timeout;
@@ -51,7 +51,7 @@ function * getData (token, force) {
 
 function * retrieve (token) {
 
-  var data = yield store.get(token);
+  var data = yield redis.get(token);
 
   if (data === null) {
     return data;
@@ -65,12 +65,12 @@ function * save (session) {
 
   var data = JSON.stringify(session.serialise());
 
-  data = yield store.set(session.id, data);
+  data = yield redis.set(session.id, data);
 
 // redis doesn't have an indexOf like method, so we just remove the token from the list
-  yield store.lrem('token_list', 0, session.id);
+  yield redis.lrem('token_list', 0, session.id);
 // and push it on again, to ensure it's only in there once
-  yield store.rpush('token_list', session.id);
+  yield redis.rpush('token_list', session.id);
 
   return data;
 }
