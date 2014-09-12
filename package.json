@@ -20,7 +20,7 @@
     "super-base": "x",
     "super-func": "x",
     "super-is": "x",
-    "super-iter": "x",
+    "super-iter": "git+ssh://git@github.com:ibrokethat/iter.git#v0.1.0",
     "useful-copy": "x",
     "useful-value": "x",
     "yaml": "x"
