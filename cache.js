@@ -3,10 +3,10 @@ var session = require('./');
 module.exports = {
   get : function* getCached(next) {
     try {
-      var data = yield session.getCached(this.r.xcsrf, this.request.method + ':' + this.request.url);
+      var data = yield session.getCached(this.su.req.xcsrf, this.request.method + ':' + this.request.url);
 
       if (data) {
-        this.r.cached = data;
+        this.su.req.cached = data;
       }
     }
     catch (e) {
@@ -17,8 +17,8 @@ module.exports = {
   },
   set : function* cacheResponse(next) {
     try {
-      if (!this.r.cached && this.status === 200) {
-        yield session.cache(this.r.xcsrf, this.request.method + ':' + this.request.url, this.data);
+      if (!this.su.req.cached && this.status === 200) {
+        yield session.cache(this.su.req.xcsrf, this.request.method + ':' + this.request.url, this.data);
       }
     }
     catch (e) {

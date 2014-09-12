@@ -27,9 +27,9 @@ describe('su-apisession/cache', function() {
 
     yield underTest.set.call({
       data : { foo : 'bar' },
-      r : {
+      su : { req : {
         xcsrf : token
-      },
+      } },
       request : {
         method : 'GET',
         url : '/foo/bar'
@@ -44,9 +44,9 @@ describe('su-apisession/cache', function() {
 
   it('should get the `cached` data on the context if there iseses one', cothunkify(function* () {
     var ctx = {
-        r : {
+        su : { req : {
           xcsrf : token
-        },
+        } },
         request : {
           method : 'GET',
           url : '/foo/bar'
@@ -55,6 +55,6 @@ describe('su-apisession/cache', function() {
 
     yield underTest.get.call(ctx, function* () {});
 
-    expect(ctx.r.cached).to.deep.equal({ foo : 'bar' });
+    expect(ctx.su.req.cached).to.deep.equal({ foo : 'bar' });
   }));
 });
