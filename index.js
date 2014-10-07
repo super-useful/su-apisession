@@ -10,7 +10,7 @@ var rack = require('hat').rack();
 var redis = require('./redis');
 var SessionData = require('./lib/SessionData');
 
-var SESSION_TIMEOUT = CONF.global_session_timeout;
+var SESSION_TIMEOUT = CONF.app.global_session_timeout;
 
 function * getData (token, force) {
 
