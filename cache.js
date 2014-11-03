@@ -28,7 +28,7 @@ module.exports = {
 
       try {
         if (!this.su.req.cached && this.status === 200) {
-          yield session.cache(this.su.req.xcsrf, key, this.data);
+          yield session.cache(this.su.req.xcsrf, key, { data : this.data, links : this.links });
 
           process.emit('app:log', module, 'MEMCACHE:SET\t' + key);
         }
