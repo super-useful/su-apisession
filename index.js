@@ -7,7 +7,7 @@
 
 var CONF = require('config');
 var rack = require('hat').rack();
-var redis = require('./redis');
+var store = require('./' + (CONF.app.session.type || 'redis'));
 var SessionData = require('./lib/SessionData');
 
 var SESSION_TIMEOUT = CONF.app.global_session_timeout;
@@ -18,7 +18,7 @@ function * getData (token, force) {
 
       var session = yield retrieve(token);
 
-      if (session === null || (!session.isValid && force !== true)) {
+      if (!session || (!session.isValid && force !== true)) {
 
         return null;
       }
@@ -51,10 +51,10 @@ function * getData (token, force) {
 
 function * retrieve (token) {
 
-  var data = yield redis.get(token);
+  var data = yield store.get(token);
 
-  if (data === null) {
-    return data;
+  if (!data) {
+    return null;
   }
 
   return new SessionData(JSON.parse(data));
@@ -65,12 +65,12 @@ function * save (session) {
 
   var data = JSON.stringify(session.serialise());
 
-  data = yield redis.set(session.id, data);
+  data = yield store.set(session.id, data);
 
 // redis doesn't have an indexOf like method, so we just remove the token from the list
-  yield redis.lrem('token_list', 0, session.id);
+  yield store.lrem('token_list', 0, session.id);
 // and push it on again, to ensure it's only in there once
-  yield redis.rpush('token_list', session.id);
+  yield store.rpush('token_list', session.id);
 
   return data;
 }
@@ -91,7 +91,7 @@ module.exports = exports = {
     }
     catch (e) {
 
-      console.log(e);
+      console.log(e.stack);
     }
 
     return false;
@@ -114,7 +114,7 @@ module.exports = exports = {
     }
     catch (e) {
 
-      console.log(e);
+      console.log(e.stack);
     }
 
     return null;
@@ -135,7 +135,7 @@ module.exports = exports = {
       return data;
     }
     catch (e) {
-      console.log(e);
+      console.log(e.stack);
     }
 
     return null;
@@ -179,7 +179,7 @@ module.exports = exports = {
     }
     catch (e) {
 
-      console.log(e);
+      console.log(e.stack);
     }
 
     return null;
