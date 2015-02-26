@@ -15,6 +15,7 @@
     "moment-timezone": "0.2.x",
     "node-uuid": "x",
     "redis": "x",
+    "redis-sentinel": "0.3.x",
     "require-all": "x",
     "su-define-object": "git+ssh://git@github.com:super-useful/su-define-object.git",
     "super-base": "x",
