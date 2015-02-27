@@ -9,36 +9,6 @@ var Sentinel = sentinel.Sentinel([
 
 var redisClient, store;
 
-function* getValidStore() {
-  var ping;
-
-  if (store && store.connected) {
-    try {
-      ping = yield store.get('ping');
-      ping = String(ping).toLowerCase();
-    } catch(e) {
-      ping = 'WAH!!!';
-    }
-  }
-
-
-  if (ping !== 'pong') {
-    redisClient = Sentinel.createClient('master-0', {
-      retry_max_delay : 20,
-      connect_timeout : 200,
-      max_attempts : 3
-    });
-
-    store = require('co-redis')(redisClient);
-
-    yield store.set('ping', 'pong');
-
-    process.emit('app:debug', module, 'NEW REDIS CLIENT CREATED!!!');
-  }
-
-  return store;
-}
-
 module.exports = {
   del : function* del(key) {
     var store = yield getValidStore;
@@ -71,3 +41,33 @@ module.exports = {
     return yield store.set(key, value);
   }
 };
+
+function* getValidStore() {
+  var ping;
+
+  if (store && store.connected) {
+    try {
+      ping = yield store.get('ping');
+      ping = String(ping).toLowerCase();
+    } catch(e) {
+      ping = 'WAH!!!';
+    }
+  }
+
+
+  if (ping !== 'pong') {
+    redisClient = Sentinel.createClient('master-0', {
+      retry_max_delay : 20,
+      connect_timeout : 200,
+      max_attempts : 3
+    });
+
+    store = require('co-redis')(redisClient);
+
+    yield store.set('ping', 'pong');
+
+    process.emit('app:debug', module, 'NEW REDIS CLIENT CREATED!!!');
+  }
+
+  return store;
+}
