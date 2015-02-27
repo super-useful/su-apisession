@@ -56,7 +56,7 @@ function* getValidStore() {
 
 
   if (ping !== 'pong') {
-    redisClient = Sentinel.createClient('master-0', {
+    redisClient = Sentinel.createClient('megoat-session-web', {
       retry_max_delay : 20,
       connect_timeout : 200,
       max_attempts : 3
