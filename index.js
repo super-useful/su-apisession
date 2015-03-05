@@ -67,11 +67,6 @@ function * save (session) {
 
   data = yield store.set(session.id, data);
 
-// redis doesn't have an indexOf like method, so we just remove the token from the list
-  yield store.lrem('token_list', 0, session.id);
-// and push it on again, to ensure it's only in there once
-  yield store.rpush('token_list', session.id);
-
   return data;
 }
 
@@ -109,6 +104,11 @@ module.exports = exports = {
       });
 
       yield save(session);
+
+    // redis doesn't have an indexOf like method, so we just remove the token from the list
+    //  yield store.lrem('token_list', 0, token);
+    // and push it on again, to ensure it's only in there once
+      yield store.rpush('token_list', token);
 
       return token;
     }
