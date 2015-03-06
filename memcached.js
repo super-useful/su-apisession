@@ -21,7 +21,7 @@ module.exports = exports = {
   get : function* get(key) {
     return yield store.$get(key);
   },
-  lrange : function* lrange(key, begin, end) {
+  smembers : function* smembers(key) {
     var list = yield store.$get(key);
 
     if (list) {
@@ -29,18 +29,14 @@ module.exports = exports = {
     }
 
     if (Array.isArray(list)) {
-      if (isNaN(end) || end !== end) {
-        end = list.length - 1;
-      }
-
-      return list.slice(begin, (end < 0 ? list.length + end : end));
+      return list;
     }
 
     yield exports.set(key, JSON.stringify([]));
 
     return [];
   },
-  lrem : function* lrem(key, value) {
+  srem : function* srem(key, value) {
     var count = 0;
     var i;
     var list = yield store.$get(key);
@@ -66,7 +62,7 @@ module.exports = exports = {
 
     return count;
   },
-  rpush : function* rpush(key, value) {
+  sadd : function* sadd(key, value) {
     var list = yield store.$get(key);
 
 

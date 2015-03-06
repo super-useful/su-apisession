@@ -17,14 +17,14 @@ module.exports = {
   get : function* get(key) {
     return yield store.get(key);
   },
-  lrange : function* lrange(key, begin, end) {
-    return yield store.lrange(key, begin, end);
+  smembers : function* smembers(key) {
+    return yield store.smembers(key);
   },
-  lrem : function* lrem(key, value) {
-    return yield store.lrem(key, 0, value);
+  srem : function* srem(key, value) {
+    return yield store.srem(key, value);
   },
-  rpush : function* rpush(key, value) {
-    return yield store.rpush(key, value);
+  sadd : function* sadd(key, value) {
+    return yield store.sadd(key, value);
   },
   set : function* set(key, value) {
     return yield store.set(key, value);

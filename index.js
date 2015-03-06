@@ -105,10 +105,7 @@ module.exports = exports = {
 
       yield save(session);
 
-    // redis doesn't have an indexOf like method, so we just remove the token from the list
-    //  yield store.lrem('token_list', 0, token);
-    // and push it on again, to ensure it's only in there once
-      yield store.rpush('token_list', token);
+      yield store.sadd('token_set', token);
 
       return token;
     }

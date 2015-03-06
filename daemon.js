@@ -40,7 +40,7 @@ function* checkAndInvalidate(token) {
 
 function* invalidate(token, data) {
   yield store.del(token);
-  yield store.lrem('token_list', 0, token);
+  yield store.srem('token_set', token);
 
   if (data !== null) {
     data.isValid = false;
@@ -50,7 +50,7 @@ function* invalidate(token, data) {
 
 module.exports = exports = {
   cleanup: function* () {
-    var tokens = yield store.lrange('token_list', 0, -1);
+    var tokens = yield store.smembers('token_set');
 
     if (Array.isArray(tokens)) {
       yield map(tokens, co(checkAndInvalidate));
