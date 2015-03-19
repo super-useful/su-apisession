@@ -17,6 +17,9 @@ module.exports = {
   get : function* get(key) {
     return yield store.get(key);
   },
+  pexpire : function* pexpire(key, ms) {
+    return yield store.pexpire(key, ms);
+  },
   smembers : function* smembers(key) {
     return yield store.smembers(key);
   },

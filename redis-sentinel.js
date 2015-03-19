@@ -20,6 +20,11 @@ module.exports = {
 
     return yield store.get(key);
   },
+  pexpire : function* pexpire(key, ms) {
+    var store = yield getValidStore;
+
+    return yield store.pexpire(key, ms);
+  },
   smembers : function* smembers(key) {
     var store = yield getValidStore;
 

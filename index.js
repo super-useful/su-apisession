@@ -10,6 +10,7 @@ var rack = require('hat').rack();
 var store = require('./' + (CONF.app.session.type || 'redis'));
 var SessionData = require('./lib/SessionData');
 
+var CLEANUP_TIME = CONF.app.session.cleanup_time;
 var SESSION_TIMEOUT = CONF.app.global_session_timeout;
 
 function * getData (token, force) {
@@ -67,6 +68,8 @@ function * save (session) {
 
   data = yield store.set(session.id, data);
 
+  yield store.pexpire(session.id, CLEANUP_TIME);
+
   return data;
 }
 
@@ -105,7 +108,7 @@ module.exports = exports = {
 
       yield save(session);
 
-      yield store.sadd('token_set', token);
+      //yield store.sadd('token_set', token);
 
       return token;
     }
@@ -148,12 +151,14 @@ module.exports = exports = {
 
       var session = yield retrieve(token);
 
-      session.isValid = false;
-      session.cache = {};
+      if (session) {
+        session.isValid = false;
+        session.cache = {};
 
-      yield save(session);
+        yield save(session);
 
-      return true;
+        return true;
+      }
     }
     catch (e) {
       console.log('SessionTokenError: ', e.message);
