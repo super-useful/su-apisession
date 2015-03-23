@@ -7,13 +7,10 @@ var is = require('super-is');
 var iter = require('super-iter');
 var CONF = require('config');
 var getenv = require('getenv');
-var redis = require('redis');
-
-var REDIS_PORT = getenv('REDIS_PORT_6379_TCP_PORT', '6379');
-var REDIS_HOST = getenv('REDIS_PORT_6379_TCP_ADDR', 'localhost');
+var sleep = require('co-sleep');
 
 var session = require('./');
-var redis = require('./redis');
+var store = require('./' + (CONF.app.session.type || 'redis'));
 
 var bus = new EventEmitter();
 
@@ -43,8 +40,11 @@ function* checkAndInvalidate(token) {
 }
 
 function* invalidate(token, data) {
-  yield redis.del(token);
-  yield redis.lrem('token_list', 0, token);
+  yield store.del(token);
+  process.emit('app:log', module, 'session daemon deleted: ' + token);
+
+  //yield store.srem('token_set', token);
+  //process.emit('app:log', module, 'deleted token: ' + token);
 
   if (data !== null) {
     data.isValid = false;
@@ -54,11 +54,40 @@ function* invalidate(token, data) {
 
 module.exports = exports = {
   cleanup: function* () {
-    var tokens = yield redis.lrange('token_list', 0, -1);
+    yield sleep(Math.floor(Math.random() * 1000));
 
-    if (Array.isArray(tokens)) {
-      yield map(tokens, co(checkAndInvalidate));
+    var cleanup = yield store.get('cleanup');
+
+    if (cleanup === 'running') {
+      process.emit('app:info', module, 'session daemon cleanup skipped');
+
+      return;
     }
+
+    yield store.set('cleanup', 'running');
+
+    process.emit('app:info', module, 'session daemon cleanup starting');
+    process.emit('app:time', module);
+
+    //var tokens = yield store.smembers('token_set');
+    var token, tokens = yield store.keys('*');
+
+    if (Array.isArray(tokens) && tokens.length) {
+      process.emit('app:info', module, 'session daemon checking ' + tokens.length + ' tokens');
+
+      while (token = tokens.shift()) {
+        yield checkAndInvalidate(token);
+      }
+      //yield map(tokens, co(checkAndInvalidate));
+      //var expired = yield map(tokens, co(checkAndInvalidate));
+      //expired = tokens = null;
+    }
+
+    process.emit('app:timeend', module);
+
+    process.emit('app:info', module, 'session daemon cleanup finished');
+
+    yield store.del('cleanup');
 
     return exports;
   },
@@ -76,12 +105,16 @@ module.exports = exports = {
 
     intervalId = defer.interval(exports.cleanup, cleanupInterval);
 
+    process.emit('app:info', module, 'session daemon started');
+
     return exports;
   },
   stop: function() {
     clearInterval(intervalId);
 
     intervalId = null;
+
+    process.emit('app:info', module, 'session daemon stopped');
 
     return exports;
   }

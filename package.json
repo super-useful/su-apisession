@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "su-apiserver session handling",
   "dependencies": {
-    "co": "x",
+    "co": "3.1.x",
     "co-defer": "x",
     "co-redis": "x",
     "co-sleep": "x",
@@ -11,15 +11,18 @@
     "getenv": "^0.3.0",
     "hat": "x",
     "js-yaml": "x",
+    "memcached": "2.0.x",
     "moment-timezone": "0.2.x",
     "node-uuid": "x",
     "redis": "x",
+    "redis-sentinel": "0.3.x",
     "require-all": "x",
     "su-define-object": "git+ssh://git@github.com:super-useful/su-define-object.git",
     "super-base": "x",
     "super-func": "x",
     "super-is": "x",
     "super-iter": "git+ssh://git@github.com:ibrokethat/iter.git#v0.1.0",
+    "thunkify": "2.1.x",
     "useful-copy": "x",
     "useful-value": "x",
     "yaml": "x"
@@ -50,8 +53,8 @@
     "url": "git@github.com:super-useful/su-apisession.git"
   },
   "scripts": {
-    "test": "export NODE_ENV='test' && ./node_modules/.bin/mocha --colors --harmony --harmony_typeof --recursive -R spec -u bdd ./test/**/*.test.js ./test/*.test.js",
-    "test-jenkins": "export NODE_ENV='test' && ./node_modules/.bin/mocha --colors --harmony --harmony_typeof --recursive -R xunit --ui bdd ./test/**/*.test.js ./test/*.test.js > test-reports.xml",
+    "test": "export NODE_ENV='test' && ./node_modules/.bin/mocha --colors --harmony --recursive -R spec -u bdd ./test/**/*.test.js ./test/*.test.js",
+    "test-jenkins": "export NODE_ENV='test' && ./node_modules/.bin/mocha --colors --harmony --recursive -R xunit --ui bdd ./test/**/*.test.js ./test/*.test.js > test-reports.xml",
     "start": "node --harmony index.js"
   },
   "engines": {

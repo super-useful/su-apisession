@@ -39,7 +39,7 @@ describe('su-apisession/cache', function() {
 
     var data = yield session.getCached(token, 'GET:/foo/bar');
 
-    expect(data).to.deep.equal({ foo : 'bar' });
+    expect(data.data).to.deep.equal({ foo : 'bar' });
   }));
 
   it('should get the `cached` data on the context if there iseses one', cothunkify(function* () {
@@ -55,6 +55,6 @@ describe('su-apisession/cache', function() {
 
     yield underTest.get.call(ctx, function* () {});
 
-    expect(ctx.su.req.cached).to.deep.equal({ foo : 'bar' });
+    expect(ctx.su.req.cached.data).to.deep.equal({ foo : 'bar' });
   }));
 });

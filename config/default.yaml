@@ -5,4 +5,5 @@ app:
     cleanup_time: 7200000
     cleanup_interval: 3600000
     memcache: false
+    type: "redis"
   global_session_timeout: 3600000
